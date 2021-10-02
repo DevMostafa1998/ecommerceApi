@@ -54,15 +54,17 @@ router.get("/find/:id", verifyTokenAndAuthorization, async(req, res)=>{
 router.get("/", verifyTokenAndAuthorization, async(req, res)=>{
     const qNew =  req.query.new;
     const qcategory =  req.query.category;
+    
     // res.status(200).json(await Product.find())
     try{
         let products;
         if (qNew && qcategory) {
-
-            //    http://localhost:3200/api/products?category=man&new=true
+            let category_split = qcategory.split(",")
+            console.log(category_split);
+            //localhost:3200/api/products?category=shirt,man&new=true
             products = await Product.find({
                 categoryes: {
-                    $in: [qcategory]
+                    $all: category_split
                 }
             }).sort({ createdAt: -1 }).limit(5)
 
@@ -79,7 +81,7 @@ router.get("/", verifyTokenAndAuthorization, async(req, res)=>{
 
             //    http://localhost:3200/api/products?new=true
             products = await Product.find().sort({ createdAt: -1 }).limit(5);
-            
+
         } else {
             products = await Product.find()
         }
