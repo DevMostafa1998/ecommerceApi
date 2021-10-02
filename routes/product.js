@@ -57,18 +57,32 @@ router.get("/", verifyTokenAndAuthorization, async(req, res)=>{
     // res.status(200).json(await Product.find())
     try{
         let products;
-       if(qNew){
-        //    http://localhost:3200/api/products?new=true
-        products = await Product.find().sort({createdAt: -1}).limit(5);
-       }else if(qcategory){
-        //    http://localhost:3200/api/products?category=name_category
-        products = await Product.find({categoryes:{
-               $in:[qcategory]
-           }
-        })
-       }else{
-        products = await Product.find()  
-       }
+        if (qNew && qcategory) {
+
+            //    http://localhost:3200/api/products?category=man&new=true
+            products = await Product.find({
+                categoryes: {
+                    $in: [qcategory]
+                }
+            }).sort({ createdAt: -1 }).limit(5)
+
+        } else if (qcategory) {
+
+            //    http://localhost:3200/api/products?category=name_category
+            products = await Product.find({
+                categoryes: {
+                    $in: [qcategory]
+                }
+            })
+
+        } else if (qNew) {
+
+            //    http://localhost:3200/api/products?new=true
+            products = await Product.find().sort({ createdAt: -1 }).limit(5);
+            
+        } else {
+            products = await Product.find()
+        }
         res.status(200).json(products)
     }catch(err){
         res.status(500).json(err)
