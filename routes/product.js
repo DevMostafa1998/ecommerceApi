@@ -6,7 +6,7 @@ var router = express.Router();
 
 //CREAE
 
-router.post("/", async (req, res)=>{
+router.post("/", verifyTokenAndAdmin, async (req, res)=>{
     const newProduct = new Product(req.body)
     try{
         const savedProduct = await newProduct.save();
@@ -43,7 +43,7 @@ router.delete("/:id", verifyTokenAndAdmin, async(req, res)=>{
 //GET Product
 router.get("/find/:id", verifyTokenAndAuthorization, async(req, res)=>{
     try{
-        const product = await Product.findByIdAndDelete(req.params.id)
+        const product = await Product.findById(req.params.id)
         res.status(200).json({user})
     }catch(err){
         res.json(500).json(err)
